@@ -244,8 +244,6 @@ Tests:                tests/ (4 fichiers test)
 Configuration:        config.py (centralisée)
 Documentation:
   - README.md         Guide complet
-  - QUICKSTART.md     Démarrage rapide
-  - METHODOLOGY.md    Détails mathématiques
 Dataset:              data/Pima_Diabetes_organise.csv
 
 ================================================================================
@@ -322,8 +320,8 @@ CONTACT
 ================================================================================
 
 Auteur: Henri AYAMA
-Email: henri.ayama@univ-amu.fr
-Université: Aix-Marseille Université (AMU)
+Email: henri.ayama@etu.univ-amu.fr
+Université: Aix-Marseille Université (amU)
 Formation: EAD (Enseignement à Distance)
 Année: 2025-2026
 
