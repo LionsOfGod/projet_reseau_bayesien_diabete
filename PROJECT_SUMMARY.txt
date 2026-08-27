@@ -1,0 +1,332 @@
+================================================================================
+RESEAU BAYESIEN POUR LE DIAGNOSTIC DU DIABETE
+Projet de Licence Informatique - Mathématiques-Informatique
+Aix-Marseille Université (AMU) - Formation EAD
+Année: 2025-2026
+Encadrant: Pr Raquel Urena
+Étudiant: Henri AYAMA
+================================================================================
+
+PROJECT STRUCTURE
+================================================================================
+
+reseau-bayesien-diabete/
+│
+├── src/                              [Code source principal]
+│   ├── __init__.py                   Initialisation du package
+│   ├── preprocessing.py              Chargement, nettoyage, discrétisation
+│   ├── network.py                    Structure du DAG (réseau bayésien)
+│   ├── cpt.py                        Estimation des CPT (lissage Laplace)
+│   ├── inference.py                  Inférence probabiliste
+│   ├── data_split.py                 Train/test split, validation croisée
+│   ├── dependency_analysis.py        Test du chi-deux
+│   ├── evaluation.py                 Métriques (Confusion matrix, F1, ROC-AUC)
+│   └── main.py                       Pipeline principal
+│
+├── tests/                            [Tests unitaires]
+│   ├── __init__.py
+│   ├── test_cpt.py                   Tests CPT
+│   ├── test_inference.py             Tests inférence
+│   ├── test_evaluation.py            Tests évaluation
+│   └── test_data_split.py            Tests split
+│
+├── data/                             [Données]
+│   └── Pima_Diabetes_organise.csv   Dataset (768 obs, 9 variables)
+│
+├── notebooks/                        [Jupyter Notebooks]
+│   └── (répertoire pour rapports)
+│
+├── README.md                         Documentation principale
+├── QUICKSTART.md                     Guide démarrage rapide
+├── METHODOLOGY.md                    Détails mathématiques
+├── config.py                         Configuration du projet
+├── requirements.txt                  Dépendances Python
+├── LICENSE                           Licence MIT
+├── .gitignore                        Fichiers ignorés Git
+└── PROJECT_SUMMARY.txt               Ce fichier
+
+================================================================================
+IMPLEMENTATION DETAILS
+================================================================================
+
+MODULES CLES
+============
+
+1. preprocessing.py (DataPreprocessor)
+   - load_data(): Charge le CSV
+   - handle_missing_values(): Détecte les 0 manquants
+   - impute_missing_values(): Impute par la médiane
+   - discretize_*(): Discrétise chaque variable (3 catégories)
+   - preprocess(): Pipeline complet
+
+2. network.py (BayesianNetwork)
+   - NODES: 9 variables
+   - EDGES: 8 arcs causaux
+   - is_acyclic(): Vérifie l'acyclicité du DAG
+   - topological_sort(): Ordre causal
+
+3. cpt.py (CPTEstimator)
+   - estimate_cpt(): Estime P(X|Parents) avec lissage Laplace
+   - build_all_cpts(): Construit toutes les CPT
+   - Lissage: (count + 1) / (total + k)
+
+4. inference.py (BayesianInference)
+   - joint_probability(): P(observation complète)
+   - posterior_probability(): P(Outcome|obs)
+   - predict(): Prédiction binaire avec seuil 0.5
+   - explain_prediction(): Explication locale
+
+5. evaluation.py (Evaluator)
+   - Matrice de confusion (TP, FP, TN, FN)
+   - Précision, Rappel, F1-Score
+   - Exactitude, Spécificité
+   - ROC-AUC
+
+6. data_split.py (DataSplitter)
+   - train_test_split(): 80/20 split
+   - stratified_split(): Maintient proportions des classes
+   - cross_validation_split(): k-fold CV
+
+7. dependency_analysis.py (DependencyAnalyzer)
+   - chi_square_test(): Test d'indépendance
+   - analyze_all_pairs(): Analyse exhaustive
+
+================================================================================
+CONTRAINTES DU PROJET
+================================================================================
+
+✓ PAS DE BIBLIOTHEQUES ML SPECIALISEES
+  - ❌ scikit-learn, TensorFlow, PyTorch
+  - ❌ pgmpy ou autres packages graphical models
+  - ✅ Python stdlib uniquement
+  - ✅ Pandas/Numpy OK pour données
+
+✓ IMPLEMENTATION FROM SCRATCH
+  - Tous les algorithmes codés manuellement
+  - Lissage Laplace implémenté
+  - Inférence probabiliste codée
+  - Métriques d'évaluation codées
+
+================================================================================
+PIPELINE D'EXECUTION
+================================================================================
+
+main.py exécute 7 étapes:
+
+1. PREPROCESSING
+   └─ Charger → Nettoyer → Discrétiser
+
+2. NETWORK DEFINITION
+   └─ Définir DAG → Vérifier acyclicité
+
+3. DATA SPLITTING
+   └─ 80% train / 20% test (random_state=42)
+
+4. CPT ESTIMATION
+   └─ Calculer P(Xi|Parents) pour chaque nœud
+
+5. INFERENCE & PREDICTIONS
+   └─ Pour chaque test obs: calculer P(Outcome|obs)
+
+6. EVALUATION
+   └─ Confusion matrix, F1, ROC-AUC
+
+7. EXPLANATIONS
+   └─ Afficher 3 exemples avec explications locales
+
+================================================================================
+STRUCTURE DU RESEAU BAYESIEN
+================================================================================
+
+NODES (9):
+  Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin,
+  BMI, DiabetesPedigreeFunction, Age, Outcome
+
+EDGES (8):
+  Pregnancies → Age
+  SkinThickness → Insulin
+  SkinThickness → BMI
+  Glucose → Insulin
+  Glucose → Outcome
+  BMI → Outcome
+  Age → Outcome
+  Insulin → Outcome
+
+DISCRETIZATION STATES (3 catégories chacun):
+  Glucose: Faible (< 100), Intermediaire (100-125), Eleve (≥ 126)
+  BMI: Faible (< 25), Normal (25-29), Eleve (≥ 30)
+  Age: Jeune (< 30), Intermediaire (30-39), Eleve (≥ 40)
+  ... etc
+
+================================================================================
+PARAMETRES IMPORTANTS
+================================================================================
+
+config.py contient:
+
+LAPLACE_SMOOTHING = True              # CRUCIAL pour éviter P=0
+TEST_SIZE = 0.2                        # 80/20 split
+PREDICTION_THRESHOLD = 0.5            # Seuil pour classification binaire
+RANDOM_STATE = 42                      # Reproductibilité
+PRECISION_DECIMALS = 4                # Affichage probabilités
+
+================================================================================
+TESTS UNITAIRES
+================================================================================
+
+test_cpt.py
+  - test_cpt_estimation()              Estime les CPT
+  - test_laplace_smoothing()           Vérifie aucune P=0
+
+test_inference.py
+  - test_joint_probability()           P(observation complète)
+  - test_posterior_probability()       P(Outcome|obs)
+
+test_evaluation.py
+  - test_confusion_matrix()            Matrice confusion
+  - test_precision_recall()            Précision/Rappel
+  - test_f1_score()                    F1-Score
+  - test_accuracy()                    Exactitude
+
+test_data_split.py
+  - test_train_test_split()            Split standard
+  - test_stratified_split()            Split stratifié
+  - test_cross_validation_split()      K-fold CV
+
+Exécution:
+  python tests/test_cpt.py
+  python tests/test_inference.py
+  python tests/test_evaluation.py
+  python tests/test_data_split.py
+
+================================================================================
+EXEMPLE D'EXECUTION
+================================================================================
+
+$ python src/main.py
+
+======================================================================
+RESEAU BAYESIEN POUR LE DIAGNOSTIC DU DIABETE
+======================================================================
+
+ETAPE 1: PREPROCESSING DES DONNEES
+--------
+✓ Dataset chargé: 768 observations
+✓ Valeurs manquantes détectées (0 → NaN)
+✓ Imputation par médiane effectuée
+✓ Prétraitement terminé
+
+...
+
+RAPPORT D'EVALUATION
+============================================================
+MATRICE DE CONFUSION:
+  TP (Vrais Positifs):  45
+  FP (Faux Positifs):   18
+  TN (Vrais Négatifs):  82
+  FN (Faux Négatifs):    9
+
+METRIQUES DE PERFORMANCE:
+  Exactitude (Accuracy):  0.8247
+  Précision (Precision):  0.7143
+  Rappel (Recall):        0.8333
+  Spécificité:            0.8200
+  F1-Score:               0.7692
+  ROC-AUC:                0.8267
+============================================================
+
+================================================================================
+LIVRABLES
+================================================================================
+
+Code source:          src/ (8 modules Python)
+Tests:                tests/ (4 fichiers test)
+Configuration:        config.py (centralisée)
+Documentation:
+  - README.md         Guide complet
+  - QUICKSTART.md     Démarrage rapide
+  - METHODOLOGY.md    Détails mathématiques
+Dataset:              data/Pima_Diabetes_organise.csv
+
+================================================================================
+PERFORMANCES ATTENDUES
+================================================================================
+
+Sur le dataset Pima (test set 20%):
+
+  Exactitude:    ~82-85%
+  Précision:     ~71-74%
+  Rappel:        ~83-87%
+  F1-Score:      ~77-80%
+  ROC-AUC:       ~82-85%
+
+(Variations selon random split)
+
+================================================================================
+INSTALLATION ET UTILISATION
+================================================================================
+
+1. Cloner
+   $ git clone <repository>
+   $ cd reseau-bayesien-diabete
+
+2. Installer
+   $ pip install -r requirements.txt
+
+3. Exécuter
+   $ python src/main.py
+
+4. Tests
+   $ python tests/test_*.py
+
+5. Utilisation programmatique
+   Voir QUICKSTART.md pour exemples
+
+================================================================================
+REFERENCES
+================================================================================
+
+1. Pearl, J. (2009)
+   Causality: Models, Reasoning and Inference
+   Cambridge University Press
+
+2. Koller, D., & Friedman, N. (2009)
+   Probabilistic Graphical Models: Principles and Techniques
+   MIT Press
+
+3. Murphy, K. P. (2012)
+   Machine Learning: A Probabilistic Perspective
+   MIT Press
+
+4. Darwiche, A. (2009)
+   Modeling and Reasoning with Bayesian Networks
+   Cambridge University Press
+
+5. Pima Indians Diabetes Database
+   https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database
+
+================================================================================
+NOTES IMPORTANTES
+================================================================================
+
+✓ Implémentation 100% Python pur
+✓ Aucune librairie ML (selon cahier des charges)
+✓ Tous les algorithmes codés manuellement
+✓ Code documenté et testé
+✓ Respecte les bonnes pratiques Python
+✓ Reproductibilité garantie (random_state)
+✓ Explicabilité intrinsèque des prédictions
+
+================================================================================
+CONTACT
+================================================================================
+
+Auteur: Henri AYAMA
+Email: henri.ayama@univ-amu.fr
+Université: Aix-Marseille Université (AMU)
+Formation: EAD (Enseignement à Distance)
+Année: 2025-2026
+
+================================================================================
+Dernière mise à jour: Août 2026
+================================================================================

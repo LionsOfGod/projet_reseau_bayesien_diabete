@@ -1,0 +1,17 @@
+# Requirements for Bayesian Network Diabetes Classifier
+# Implémentation from scratch - NO machine learning libraries
+
+# Utilitaires standards Python
+# Pas de dépendances externes requises pour la logique principale
+
+# Optionnel pour Jupyter Notebook uniquement:
+# jupyter>=1.0.0
+# ipython>=7.0.0
+
+# Pour les données (optionnel):
+# pandas>=1.0.0  (pour faciliter la lecture des CSV si souhaité)
+
+# Notes:
+# - Cette implémentation utilise UNIQUEMENT la stdlib Python
+# - Aucune dépendance scikit-learn, TensorFlow, PyTorch, etc.
+# - Mathématiques implémentées manuellement (lissage Laplace, probabilités, etc.)
