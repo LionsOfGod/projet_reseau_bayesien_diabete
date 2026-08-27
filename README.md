@@ -5,7 +5,8 @@
 ## 📋 Projet de fin de cycle Licence Informatique
 
 - **Université** : Aix-Marseille Université (amU) - EAD Sciences
-- **Parcours** : Licence L3 Informatique - Mathématiques-Informatique
+- **Formation** : Licence 3 Informatique
+- **Parcours** : Mathématiques-Informatique
 - **Encadrant** : Pr Raquel Urena
 - **Année** : 2025-2026
 
