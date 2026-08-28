@@ -377,7 +377,7 @@ $$P(\text{Outcome}=1 | \text{obs}) = \frac{P(\text{Outcome}=1, \text{obs})}{P(\t
 **Henri AYAMA**  
 Étudiant L3 Informatique
 Parcours Mathématiques-Informatique  
-Aix-Marseille Université (EAD)  
+Aix-Marseille Université (amU) EAD  
 2025-2026
 
 ---
