@@ -69,7 +69,7 @@ reseau-bayesien-diabete/
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/HenriAYAMA/reseau-bayesien-diabete.git
+git clone https://github.com/LionsOfGod/projet_reseau_bayesien_diabete.git
 cd reseau-bayesien-diabete
 ```
 
