@@ -1,4 +1,4 @@
-# Réseaux Bayésiens pour la Décision Clinique Interprétable
+# Réseau Bayésien pour la Décision Clinique Interprétable
 
 **Application au diagnostic probabiliste du diabète**
 
